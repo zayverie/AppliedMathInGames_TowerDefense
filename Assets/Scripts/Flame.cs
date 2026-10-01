@@ -47,11 +47,20 @@ public class Flame : MonoBehaviour
             return;
         }
 
-        if (enemy != null && (transform.position - enemy.position).sqrMagnitude <= hitArea)
+        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (Enemy e in enemies)
         {
-            Debug.Log("Enemy hit by projectile!");
-            Destroy(gameObject);
-            sceneRestarterScript.RestartScene();
+            if (e != null && (transform.position - e.transform.position).sqrMagnitude <= hitArea)
+            {
+                Debug.Log("enemy hit by flame!");
+                Destroy(e.gameObject);
+                Destroy(gameObject);
+
+                // if (sceneRestarterScript != null)
+                // {
+                //     sceneRestarterScript.RestartScene();
+                // }
+            }
         }
     }
 }

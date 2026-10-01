@@ -45,14 +45,19 @@ public class ShotgunBullet : MonoBehaviour
             return;
         }
 
-        if (enemy != null && Vector3.Distance(transform.position, enemy.position) <= hitArea)
+        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (Enemy e in enemies)
         {
-            Debug.Log("enemy hit by shotgun pellet!");
-            Destroy(gameObject);
-
-            if (sceneRestarterScript != null)
+            if (e != null && (transform.position - e.transform.position).sqrMagnitude <= hitArea)
             {
-                sceneRestarterScript.RestartScene();
+                Debug.Log("enemy hit by shotgun pellet!");
+                Destroy(e.gameObject);
+                Destroy(gameObject);
+
+                // if (sceneRestarterScript != null)
+                // {
+                //     sceneRestarterScript.RestartScene();
+                // }
             }
         }
     }

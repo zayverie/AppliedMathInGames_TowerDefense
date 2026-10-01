@@ -12,9 +12,6 @@ public class Enemy : MonoBehaviour
     public Vector3 initialPosition, p1, p2, p3; // Control points for the curve
     public float velocity = 5f;
     public EnemySpawner enemySpawner;
-    public ShotgunBullet shotgunBullet;
-    public SniperBullet sniperBullet;
-    public Flame flame;
     public float duration = 10f; // Duration to traverse the curve
     public float elapsedTime = 0f; // Time elapsed since the start of the movement
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -24,26 +21,12 @@ public class Enemy : MonoBehaviour
         {
             enemySpawner = FindAnyObjectByType<EnemySpawner>();
         }
-
-        if(shotgunBullet == null)
-        {
-            shotgunBullet = FindAnyObjectByType<ShotgunBullet>();
-        }
-
-        if(sniperBullet == null)
-        {
-            sniperBullet = FindAnyObjectByType<SniperBullet>();
-        }
-
-        if(flame == null)
-        {
-            flame = FindAnyObjectByType<Flame>();
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
+
         elapsedTime += Time.deltaTime;
         float t = Mathf.Clamp01(elapsedTime / duration); // Normalized time (0 to 1)
 

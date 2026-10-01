@@ -48,14 +48,19 @@ public class SniperBullet : MonoBehaviour
             return;
         }
 
-        if (enemy != null && (transform.position - enemy.position).sqrMagnitude <= hitArea)
+        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (Enemy e in enemies)
         {
-            Debug.Log("enemy hit by sniper projectile!");
-            Destroy(gameObject);
-
-            if (sceneRestarterScript != null)
+            if (e != null && (transform.position - e.transform.position).sqrMagnitude <= hitArea)
             {
-                sceneRestarterScript.RestartScene();
+                Debug.Log("enemy hit by sniper projectile!");
+                Destroy(e.gameObject);
+                Destroy(gameObject);
+
+                // if (sceneRestarterScript != null)
+                // {
+                //     sceneRestarterScript.RestartScene();
+                // }
             }
         }
     }
