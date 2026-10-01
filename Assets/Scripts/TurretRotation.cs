@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TurretRotation : MonoBehaviour
 {
-    [SerializeField] private Transform player;
+    [SerializeField] private Transform enemy;
     [SerializeField] private Transform[] shooters;
     [SerializeField] private float rotSpeed = 5f;
     
@@ -15,20 +15,20 @@ public class TurretRotation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rotateToPlayer();
+        rotateToEnemy();
         
     }
-    public void rotateToPlayer()
+    public void rotateToEnemy()
     {
-        if (player == null || shooters == null) return;
+        if (enemy == null || shooters == null) return;
 
         // Loop through each shooter in the array
         foreach (Transform shooter in shooters)
         {
             if (shooter == null) continue; // Skip empty slots
 
-            // Direction from THIS shooter to the player
-            Vector3 dir = player.position - shooter.position;
+            // Direction from THIS shooter to the enemy
+            Vector3 dir = enemy.position - shooter.position;
 
             // Angle on the XZ plane
             float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;

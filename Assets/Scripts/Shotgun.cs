@@ -7,32 +7,39 @@ public class Shotgun : MonoBehaviour
     [SerializeField] private float coneAngle = 60f;
     [SerializeField] private float fireRate = 2f; 
     [SerializeField] private int pelletCount = 5;
+    [SerializeField] private float turnSpeed = 6f;
 
     public GameObject bulletPrefab;
-    public Transform player;
+    public Transform enemy;
 
     private float nextFireTime;
     private LineRenderer lr;
+    private float halfConeAngle;
 
     void Awake()
     {
         lr = GetComponent<LineRenderer>();
         lr.positionCount = 3;
-    }
-
-    void Start()
-    {
-        if (player == null)
-        {
-            Player found = FindAnyObjectByType<Player>();
-            if (found != null) player = found.transform;
-        }
+        halfConeAngle = coneAngle / 2f;
     }
 
     void Update()
     {
-        if (player != null && IsInCone(player.position))
+        // 1. Scan for enemies currently inside the cone
+        enemy = GetEnemyInCone();
+
+        // 2. Rotate towards target and shoot
+        if (enemy != null)
         {
+            Vector3 dir = enemy.position - transform.position;
+            dir.y = 0f;
+
+            if (dir != Vector3.zero)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
+            }
+
             if (Time.time >= nextFireTime)
             {
                 FireShotgun();
@@ -44,6 +51,19 @@ public class Shotgun : MonoBehaviour
     void LateUpdate()
     {
         DrawCone();
+    }
+
+    private Transform GetEnemyInCone()
+    {
+        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (Enemy e in enemies)
+        {
+            if (e != null && IsInCone(e.transform.position))
+            {
+                return e.transform;
+            }
+        }
+        return null;
     }
 
     public bool IsInCone(Vector3 targetPosition)
@@ -59,15 +79,14 @@ public class Shotgun : MonoBehaviour
 
         float delta = Mathf.Abs(Mathf.DeltaAngle(tAngle, pAngle));
 
-        return delta <= coneAngle / 2f;
+        return delta <= halfConeAngle;
     }
 
     public void DrawCone()
     {
-        float halfCone = coneAngle * 0.5f;
         Vector3 origin = transform.position;
-        Vector3 leftDir = Quaternion.Euler(0, -halfCone, 0) * transform.forward;
-        Vector3 rightDir = Quaternion.Euler(0, halfCone, 0) * transform.forward;
+        Vector3 leftDir = Quaternion.Euler(0, -halfConeAngle, 0) * transform.forward;
+        Vector3 rightDir = Quaternion.Euler(0, halfConeAngle, 0) * transform.forward;
 
         lr.SetPosition(0, origin);
         lr.SetPosition(1, origin + leftDir * range);
@@ -78,7 +97,7 @@ public class Shotgun : MonoBehaviour
     {
         Vector3 firePoint = transform.position + transform.forward * 1f;
         float angleSequence = coneAngle / pelletCount;
-        float startAngle = -coneAngle / 2f;
+        float startAngle = -halfConeAngle;
 
         for (int i = 0; i < pelletCount; i++)
         {

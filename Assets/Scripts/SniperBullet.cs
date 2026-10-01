@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SniperBullet : MonoBehaviour
 {
-    public Transform player;
+    public Transform enemy;
     public Sniper sniperScript;
     public SceneRestarter sceneRestarterScript;
 
@@ -17,12 +17,12 @@ public class SniperBullet : MonoBehaviour
             sniperScript = FindAnyObjectByType<Sniper>();
         }
 
-        if (player == null)
+        if (enemy == null)
         {
-            Player foundPlayer = FindAnyObjectByType<Player>();
-            if (foundPlayer != null)
+            Enemy foundEnemy = FindAnyObjectByType<Enemy>();
+            if (foundEnemy != null)
             {
-                player = foundPlayer.transform;
+                enemy = foundEnemy.transform;
             }
         }
 
@@ -36,7 +36,7 @@ public class SniperBullet : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.up * (speed * Time.deltaTime));
+        transform.Translate(Vector3.forward * (speed * Time.deltaTime));
         SniperHitCheck();
     }
 
@@ -48,9 +48,9 @@ public class SniperBullet : MonoBehaviour
             return;
         }
 
-        if (player != null && (transform.position - player.position).sqrMagnitude <= hitArea)
+        if (enemy != null && (transform.position - enemy.position).sqrMagnitude <= hitArea)
         {
-            Debug.Log("Player hit by sniper projectile!");
+            Debug.Log("enemy hit by sniper projectile!");
             Destroy(gameObject);
 
             if (sceneRestarterScript != null)

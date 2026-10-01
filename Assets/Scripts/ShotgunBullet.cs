@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ShotgunBullet : MonoBehaviour
 {
-    public Transform player;
+    public Transform enemy;
     public Shotgun shotgunScript;
     public SceneRestarter sceneRestarterScript;
 
@@ -12,15 +12,20 @@ public class ShotgunBullet : MonoBehaviour
 
     void Start()
     {
-        if (player == null)
+        if (enemy == null)
         {
-            Player foundPlayer = FindAnyObjectByType<Player>();
-            if (foundPlayer != null) player = foundPlayer.transform;
+            Enemy foundEnemy = FindAnyObjectByType<Enemy>();
+            if (foundEnemy != null) enemy = foundEnemy.transform;
         }
 
         if (sceneRestarterScript == null)
         {
             sceneRestarterScript = FindAnyObjectByType<SceneRestarter>();
+        }
+        
+        if (shotgunScript == null)
+        {
+            shotgunScript = FindAnyObjectByType<Shotgun>();
         }
 
         Destroy(gameObject, bulletLifetime);
@@ -40,9 +45,9 @@ public class ShotgunBullet : MonoBehaviour
             return;
         }
 
-        if (player != null && Vector3.Distance(transform.position, player.position) <= hitArea)
+        if (enemy != null && Vector3.Distance(transform.position, enemy.position) <= hitArea)
         {
-            Debug.Log("Player hit by shotgun pellet!");
+            Debug.Log("enemy hit by shotgun pellet!");
             Destroy(gameObject);
 
             if (sceneRestarterScript != null)

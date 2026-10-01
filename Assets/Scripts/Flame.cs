@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class Flame : MonoBehaviour
 {
-    public Transform player;
+    public Transform enemy;
     public FlameShooter flameShooterScript;
     public SceneRestarter sceneRestarterScript;
     [SerializeField] private float speed = 7f;
@@ -17,12 +17,12 @@ public class Flame : MonoBehaviour
             flameShooterScript = FindAnyObjectByType<FlameShooter>();
         }
 
-        if (player == null)
+        if (enemy == null)
         {
-            Player foundPlayer = FindAnyObjectByType<Player>();
-            if (foundPlayer != null)
+            Enemy foundEnemy = FindAnyObjectByType<Enemy>();
+            if (foundEnemy != null)
             {
-                player = foundPlayer.transform;
+                enemy = foundEnemy.transform;
             }
         }
         if (sceneRestarterScript == null)
@@ -47,9 +47,9 @@ public class Flame : MonoBehaviour
             return;
         }
 
-        if (player != null && (transform.position - player.position).sqrMagnitude <= hitArea)
+        if (enemy != null && (transform.position - enemy.position).sqrMagnitude <= hitArea)
         {
-            Debug.Log("Player hit by projectile!");
+            Debug.Log("Enemy hit by projectile!");
             Destroy(gameObject);
             sceneRestarterScript.RestartScene();
         }
