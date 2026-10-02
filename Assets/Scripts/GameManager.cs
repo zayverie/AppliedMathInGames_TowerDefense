@@ -23,10 +23,10 @@ public class GameManager : MonoBehaviour
             {
                 uiManagerScript.WinGame();
 
-                // if (sniperScript != null) sniperScript.enabled = false;
-                // if (flameShooterScript != null) flameShooterScript.enabled = false;
-                // if (shotgunScript != null) shotgunScript.enabled = false;
-                // if (turretRotationScript != null) turretRotationScript.enabled = false;
+                if (sniperScript != null) sniperScript.enabled = false;
+                if (flameShooterScript != null) flameShooterScript.enabled = false;
+                if (shotgunScript != null) shotgunScript.enabled = false;
+                if (turretRotationScript != null) turretRotationScript.enabled = false;
                 
                 enemyScript.enabled = false;
                 enabled = false;

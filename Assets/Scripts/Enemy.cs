@@ -7,11 +7,11 @@ public class Enemy : MonoBehaviour
         Quadratic,
         Cubic
     }
-
     public CurveType curveType;
     public Vector3 initialPosition, p1, p2, p3; // Control points for the curve
     public float velocity = 5f;
     public EnemySpawner enemySpawner;
+    public Player playerScript;
     public float duration = 10f; // Duration to traverse the curve
     public float elapsedTime = 0f; // Time elapsed since the start of the movement
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -21,25 +21,39 @@ public class Enemy : MonoBehaviour
         {
             enemySpawner = FindAnyObjectByType<EnemySpawner>();
         }
+
+        if(playerScript == null)
+        {
+            playerScript = FindAnyObjectByType<Player>();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
         elapsedTime += Time.deltaTime;
         float t = Mathf.Clamp01(elapsedTime / duration); // Normalized time (0 to 1)
 
         transform.position = curveType == CurveType.Quadratic
             ? Ease.QuadraticBezier(initialPosition, p1 * 1.8f, p2, t)
             : Ease.CubicBezier(initialPosition, p1 * 3.6f, p2 * 1.8f, p3, t);
-    
-        if((transform.position - enemySpawner.sharedPoint.position).magnitude < 0.1f)
+
+        // Check if the enemy completed the path (t >= 1) or is close to the goal point
+        bool reachedGoal = t >= 1f;
+
+        if (!reachedGoal && enemySpawner != null && enemySpawner.sharedPoint != null)
         {
-            Destroy(gameObject);
-            Debug.Log("Enemy reached the goal!");
+            reachedGoal = (transform.position - enemySpawner.sharedPoint.position).sqrMagnitude < 0.25f; // within 0.5 units
         }
-        
+
+        if (reachedGoal)
+        {
+            if (playerScript != null)
+            {
+                playerScript.TakeDamage(1f); // Inflict damage to the player
+            }
+            Destroy(gameObject);
+        }
     }
 
     public void OnDrawGizmos()
