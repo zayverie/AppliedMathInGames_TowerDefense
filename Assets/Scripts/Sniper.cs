@@ -7,7 +7,6 @@ public class Sniper : MonoBehaviour
     public Transform enemy;
     public GameObject bulletPrefab;
     public float fireRate = 1f;
-    [SerializeField] private float turnSpeed = 6f;
 
     private float nextFireTime;
     private LineRenderer lr;
@@ -27,13 +26,8 @@ public class Sniper : MonoBehaviour
         if (enemy != null)
         {
             Vector3 dir = enemy.position - transform.position;
-            dir.y = 0f;
-
-            if (dir != Vector3.zero)
-            {
-                Quaternion targetRot = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
-            }
+            float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             if (Time.time >= nextFireTime)
             {
@@ -65,14 +59,14 @@ public class Sniper : MonoBehaviour
             return false;
 
         float dot = Vector3.Dot(transform.forward, toTarget.normalized);
-        return dot >= 0.98f; // ~11° narrow beam tolerance
+        return dot >= 0.98f;
     }
 
     public void FireSniperBullet()
     {
         Vector3 firePoint = transform.position + transform.forward * 1f;
         GameObject sniperBullet = Instantiate(bulletPrefab, firePoint, transform.rotation);
-        
+
         SniperBullet bulletScript = sniperBullet.GetComponent<SniperBullet>();
         if (bulletScript != null)
         {

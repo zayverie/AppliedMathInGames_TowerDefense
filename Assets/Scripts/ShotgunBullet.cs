@@ -4,7 +4,6 @@ public class ShotgunBullet : MonoBehaviour
 {
     public Transform enemy;
     public Shotgun shotgunScript;
-    public SceneRestarter sceneRestarterScript;
 
     [SerializeField] private float speed = 18f;
     [SerializeField] private float hitArea = 1.5f;
@@ -16,11 +15,6 @@ public class ShotgunBullet : MonoBehaviour
         {
             Enemy foundEnemy = FindAnyObjectByType<Enemy>();
             if (foundEnemy != null) enemy = foundEnemy.transform;
-        }
-
-        if (sceneRestarterScript == null)
-        {
-            sceneRestarterScript = FindAnyObjectByType<SceneRestarter>();
         }
         
         if (shotgunScript == null)
@@ -51,6 +45,7 @@ public class ShotgunBullet : MonoBehaviour
             if (e != null && (transform.position - e.transform.position).sqrMagnitude <= hitArea)
             {
                 Debug.Log("enemy hit by shotgun pellet!");
+                e.EnemyDies();
                 Destroy(e.gameObject);
                 Destroy(gameObject);
 

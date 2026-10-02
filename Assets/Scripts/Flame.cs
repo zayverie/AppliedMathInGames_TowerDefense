@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,7 +6,6 @@ public class Flame : MonoBehaviour
 {
     public Transform enemy;
     public FlameShooter flameShooterScript;
-    public SceneRestarter sceneRestarterScript;
     [SerializeField] private float speed = 7f;
     [SerializeField] private float hitArea = 1.5f;
     [SerializeField] private float flameLifetime = 5f;
@@ -24,10 +24,6 @@ public class Flame : MonoBehaviour
             {
                 enemy = foundEnemy.transform;
             }
-        }
-        if (sceneRestarterScript == null)
-        {
-            sceneRestarterScript = FindAnyObjectByType<SceneRestarter>();
         }
 
         Destroy(gameObject, flameLifetime);
@@ -53,6 +49,7 @@ public class Flame : MonoBehaviour
             if (e != null && (transform.position - e.transform.position).sqrMagnitude <= hitArea)
             {
                 Debug.Log("enemy hit by flame!");
+                e.EnemyDies();
                 Destroy(e.gameObject);
                 Destroy(gameObject);
 

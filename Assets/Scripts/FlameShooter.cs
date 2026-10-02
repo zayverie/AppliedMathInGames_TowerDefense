@@ -7,7 +7,6 @@ public class FlameShooter : MonoBehaviour
     [SerializeField] private float coneAngle = 45f;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private int flameCount = 5;
-    [SerializeField] private float turnSpeed = 6f;
 
     public GameObject flamePrefab;
     public Enemy enemyScript;
@@ -27,20 +26,13 @@ public class FlameShooter : MonoBehaviour
     {
         DrawCone();
 
-        // 1. Assign the enemy found in the cone
         enemyScript = GetEnemyInCone();
 
-        // 2. If an enemy is in the cone, rotate to follow and shoot
         if (enemyScript != null)
         {
             Vector3 dir = enemyScript.transform.position - transform.position;
-            dir.y = 0f;
-
-            if (dir != Vector3.zero)
-            {
-                Quaternion targetRot = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
-            }
+            float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             if (Time.time >= nextFireTime)
             {

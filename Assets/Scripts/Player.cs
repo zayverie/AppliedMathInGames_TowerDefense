@@ -42,4 +42,15 @@ public class Player : MonoBehaviour
             uiManagerScript.UpdateHealthBar(currentHp, maxHp);
         }
     }
+
+    public void AddCoins (int addAmount)
+    {
+        coins += addAmount;
+        Debug.Log($"Player has {coins} coins.");
+
+        if (uiManagerScript != null)
+        {
+            uiManagerScript.UpdateCoinDisplay(coins);
+        }
+    }
 }

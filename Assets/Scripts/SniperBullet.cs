@@ -4,7 +4,6 @@ public class SniperBullet : MonoBehaviour
 {
     public Transform enemy;
     public Sniper sniperScript;
-    public SceneRestarter sceneRestarterScript;
 
     [SerializeField] private float speed = 50f;
     [SerializeField] private float hitArea = 1.5f;
@@ -24,11 +23,6 @@ public class SniperBullet : MonoBehaviour
             {
                 enemy = foundEnemy.transform;
             }
-        }
-
-        if (sceneRestarterScript == null)
-        {
-            sceneRestarterScript = FindAnyObjectByType<SceneRestarter>();
         }
 
         Destroy(gameObject, bulletLifetime);
@@ -54,6 +48,7 @@ public class SniperBullet : MonoBehaviour
             if (e != null && (transform.position - e.transform.position).sqrMagnitude <= hitArea)
             {
                 Debug.Log("enemy hit by sniper projectile!");
+                e.EnemyDies();
                 Destroy(e.gameObject);
                 Destroy(gameObject);
 

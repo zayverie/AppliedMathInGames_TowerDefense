@@ -5,9 +5,8 @@ public class Shotgun : MonoBehaviour
 {
     [SerializeField] private float range = 8f;
     [SerializeField] private float coneAngle = 60f;
-    [SerializeField] private float fireRate = 2f; 
+    [SerializeField] private float fireRate = 2f;
     [SerializeField] private int pelletCount = 5;
-    [SerializeField] private float turnSpeed = 6f;
 
     public GameObject bulletPrefab;
     public Transform enemy;
@@ -25,20 +24,13 @@ public class Shotgun : MonoBehaviour
 
     void Update()
     {
-        // 1. Scan for enemies currently inside the cone
         enemy = GetEnemyInCone();
 
-        // 2. Rotate towards target and shoot
         if (enemy != null)
         {
             Vector3 dir = enemy.position - transform.position;
-            dir.y = 0f;
-
-            if (dir != Vector3.zero)
-            {
-                Quaternion targetRot = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
-            }
+            float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             if (Time.time >= nextFireTime)
             {

@@ -14,6 +14,10 @@ public class Enemy : MonoBehaviour
     public Player playerScript;
     public float duration = 10f; // Duration to traverse the curve
     public float elapsedTime = 0f; // Time elapsed since the start of the movement
+
+    public GameObject coinPrefab; 
+
+    public int coinsReward = 1;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,30 +36,48 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         elapsedTime += Time.deltaTime;
-        float t = Mathf.Clamp01(elapsedTime / duration); // Normalized time (0 to 1)
+        float t = Mathf.Clamp01(elapsedTime / duration); 
 
         transform.position = curveType == CurveType.Quadratic
             ? Ease.QuadraticBezier(initialPosition, p1 * 1.8f, p2, t)
             : Ease.CubicBezier(initialPosition, p1 * 3.6f, p2 * 1.8f, p3, t);
 
-        // Check if the enemy completed the path (t >= 1) or is close to the goal point
         bool reachedGoal = t >= 1f;
 
         if (!reachedGoal && enemySpawner != null && enemySpawner.sharedPoint != null)
         {
-            reachedGoal = (transform.position - enemySpawner.sharedPoint.position).sqrMagnitude < 0.25f; // within 0.5 units
+            reachedGoal = (transform.position - enemySpawner.sharedPoint.position).sqrMagnitude < 0.25f; 
         }
 
         if (reachedGoal)
         {
             if (playerScript != null)
             {
-                playerScript.TakeDamage(1f); // Inflict damage to the player
+                playerScript.TakeDamage(1f);
             }
             Destroy(gameObject);
         }
     }
 
+    public void EnemyDies()
+    {
+        if (coinPrefab != null)
+        {
+            GameObject coinObj = Instantiate(coinPrefab, transform.position, transform.rotation);
+            Coin coin = coinObj.GetComponent<Coin>();
+            UIManager ui = FindAnyObjectByType<UIManager>();
+
+            if (coin != null && ui != null && ui.coinIcon != null)
+            {
+                coin.Setup(ui.coinIcon, ui, coinsReward);
+            }
+            else if (ui == null || ui.coinIcon == null)
+            {
+                Debug.LogWarning("Coin could not start because UIManager.coinIcon is not assigned.", this);
+            }
+        }
+        Destroy(gameObject);
+    }
     public void OnDrawGizmos()
     {
         var previousLine = initialPosition;
